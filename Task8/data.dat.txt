@@ -1,0 +1,10 @@
+Ivanov 101 15
+Petrov 101 15
+Sidorov 101 22
+Smirnov 102 15
+Volkov 102 40
+Kuznetsov 102 50
+Orlov 103 30
+Semenov 103 60
+Pavlov 104 70
+Fedorov 104 80

@@ -1,0 +1,3 @@
+Zaitsev 302 4.20
+Lebedev 302 3.90
+Smirnov 302 4.10
