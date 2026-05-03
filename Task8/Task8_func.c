@@ -166,12 +166,6 @@ void redistribute_students(Student *students, int count) {
         return;
     }
 
-    /*
-      Один проход по студентам A:
-      если у A есть одношкольник в его группе,
-      ищем студента B из другой группы, удовлетворяющего условиям,
-      и меняем местами номера групп.
-    */
     for (i = 0; i < count; ++i) {
         int group_a = students[i].Group;
         int school_a = students[i].School;
@@ -196,30 +190,14 @@ void redistribute_students(Student *students, int count) {
                 continue;
             }
 
-            /*
-              Условие 1:
-              у студента B в группе A не должно быть одношкольников.
-              То есть в группе A, кроме самого A, не должно быть студентов
-              из школы school_b.
-            */
             if (group_has_school(students, count, group_a, school_b, i)) {
                 continue;
             }
-
-            /*
-              Условие 2:
-              в группе B не должно быть одношкольников студента A.
-              То есть в группе B, кроме самого B, не должно быть студентов
-              из школы school_a.
-            */
+            
             if (group_has_school(students, count, group_b, school_a, j)) {
                 continue;
             }
-
-            /*
-              Нашли подходящего B.
-              Меняем местами номера групп студентов A и B.
-            */
+            
             temp_group = students[i].Group;
             students[i].Group = students[j].Group;
             students[j].Group = temp_group;
