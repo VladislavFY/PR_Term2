@@ -1,4 +1,4 @@
-double** mem_st(double **a, int max_N, int act_N, int elem_in_row, int size)
+double **mem_st(double **a, int max_N, int act_N, int elem_in_row, int size)
 {
     double **b;
     int j;
@@ -63,6 +63,36 @@ double** mem_st(double **a, int max_N, int act_N, int elem_in_row, int size)
     }
 
     free(a);
+
+    return b;
+}
+
+int **mem_st(int **a, int max_N, int act_N, int elem_in_row, int size)
+{
+    int **b;
+    int j;
+    int used_elements;
+
+    b = (int **)malloc(size);
+    if (b == NULL) {
+        return NULL;
+    }
+
+    b[0] = (int *)(b + max_N);
+
+    if (a != NULL) {
+        used_elements = (int)(a[act_N] - a[0]) + elem_in_row;
+
+        for (j = 0; j < used_elements; ++j) {
+            b[0][j] = a[0][j];
+        }
+
+        for (j = 1; j <= act_N; ++j) {
+            b[j] = b[j - 1] + (a[j] - a[j - 1]);
+        }
+
+        free(a);
+    }
 
     return b;
 }
