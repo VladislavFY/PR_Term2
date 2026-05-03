@@ -187,11 +187,35 @@ int check_matrix(int **array, int rows) {
 
     /* Общее количество элементов — это конец последней строки минус начало данных. */
     total = array[rows] - array[0];
-
+    printf("Linearity check: ");
     for (i = 0; i < total; ++i) {
         printf("%d ", array[0][i]);
     }
     printf("\n");
+
+    return 0;
+}
+
+int check_matrix_rmod(int **array, int rows) {
+    int i;
+    int j;
+    int len;
+
+    for (i = 0; i < rows; ++i) {
+        len = array[i + 1] - array[i];
+
+        printf("Row %d: ", i);
+
+        for (j = 0; j < len; ++j) {
+            printf("%d", array[i][j]);
+
+            if (j + 1 < len) {
+                printf(" ");
+            }
+        }
+
+        printf(", length: %d\n", len);
+    }
 
     return 0;
 }
