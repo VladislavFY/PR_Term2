@@ -53,9 +53,6 @@ int read_matrix(FILE *f, int ***array, int *rows) {
     *array = NULL;
 
     size = max_N * sizeof(int *) + max_M * sizeof(int);
-
-    /* Сразу выделяем один общий блок памяти: сначала указатели строк,
-       потом все элементы матрицы подряд, как в mem_st. */
     *array = mem_st(NULL, max_N, *rows, elem_in_row, size);
     if (*array == NULL) {
         return -2;
@@ -64,8 +61,6 @@ int read_matrix(FILE *f, int ***array, int *rows) {
     while ((c = fgetc(f)) != EOF) {
         if (c == ' ' || c == '\t' || c == '\n') {
             if (c == '\n' && elem_in_row > 0) {
-                /* Перед добавлением новой границы строки проверяем,
-                   хватает ли места под указатели строк. */
                 if (*rows + 1 >= max_N) {
                     max_N *= 2;
                     size = max_N * sizeof(int *) + max_M * sizeof(int);
@@ -79,10 +74,6 @@ int read_matrix(FILE *f, int ***array, int *rows) {
 
                     *array = tmp;
                 }
-
-                /* Конец текущей строки становится началом следующей.
-                   Поэтому длина строки теперь хранится не отдельно,
-                   а как разность array[i + 1] - array[i]. */
                 (*array)[*rows + 1] = (*array)[*rows] + elem_in_row;
                 (*rows)++;
                 elem_in_row = 0;
@@ -97,7 +88,6 @@ int read_matrix(FILE *f, int ***array, int *rows) {
                 return -3;
             }
 
-            /* Проверяем, хватает ли места под очередное число. */
             if ((*array)[*rows] + elem_in_row - (*array)[0] >= max_M) {
                 max_M *= 2;
                 size = max_N * sizeof(int *) + max_M * sizeof(int);
@@ -132,7 +122,6 @@ int read_matrix(FILE *f, int ***array, int *rows) {
             *array = tmp;
         }
 
-        /* Добавляем последнюю границу, чтобы знать конец последней строки. */
         (*array)[*rows + 1] = (*array)[*rows] + elem_in_row;
         (*rows)++;
     }
@@ -159,7 +148,7 @@ int write_matrix(FILE *f, int **array, int rows) {
     }
 
     for (i = 0; i < rows; ++i) {
-        /* Длину строки считаем через соседние указатели. */
+
         len = array[i + 1] - array[i];
 
         for (j = 0; j < len; ++j) {
@@ -185,7 +174,6 @@ int check_matrix(int **array, int rows) {
         return -1;
     }
 
-    /* Общее количество элементов — это конец последней строки минус начало данных. */
     total = array[rows] - array[0];
     printf("Linearity check: ");
     for (i = 0; i < total; ++i) {
@@ -235,7 +223,7 @@ int find_row(int **array, int rows) {
     for (r = 0; r < rows; ++r) {
         ok = 1;
 
-        /* Длина проверяемой строки хранится через разность указателей. */
+
         len_r = array[r + 1] - array[r];
 
         for (c = 0; c < len_r; ++c) {
@@ -244,7 +232,6 @@ int find_row(int **array, int rows) {
                     continue;
                 }
 
-                /* Длина другой строки тоже считается через указатели. */
                 len_rr = array[rr + 1] - array[rr];
 
                 if (len_rr > c && array[rr][c] >= array[r][c]) {
@@ -282,13 +269,11 @@ void delete_row(int **array, int *rows, int del_row) {
         return;
     }
 
-    /* Начало удаляемой строки — это смещение ее указателя от начала данных. */
+
     start = array[del_row] - array[0];
 
-    /* Длина удаляемой строки — разность соседних указателей. */
     len = array[del_row + 1] - array[del_row];
 
-    /* Всего элементов — от начала данных до конца последней строки. */
     total = array[*rows] - array[0];
 
     for (z = 0; z < total; ++z) {
@@ -297,8 +282,6 @@ void delete_row(int **array, int *rows, int del_row) {
         }
     }
 
-    /* После удаления строки сдвигаем указатели строк.
-       Все строки после удаленной теперь начинаются на len элементов раньше. */
     for (i = del_row; i < *rows; ++i) {
         array[i] = array[i + 1] - len;
     }
