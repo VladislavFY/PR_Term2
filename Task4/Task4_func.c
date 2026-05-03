@@ -200,7 +200,7 @@ int check_matrix_rmod(int **array, int rows) {
     int i;
     int j;
     int len;
-
+    printf("Rows check:\n");
     for (i = 0; i < rows; ++i) {
         len = array[i + 1] - array[i];
 
