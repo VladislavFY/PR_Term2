@@ -332,8 +332,6 @@ int main_function(void) {
         delete_row(array, &rows, del_row);
     }
 
-    check_matrix(array, rows);
-
     f_out = fopen("data.res", "w");
     if (f_out == NULL) {
         free_matrix(array);
@@ -342,7 +340,10 @@ int main_function(void) {
 
     write_matrix(f_out, array, rows);
     fclose(f_out);
-
+    
+    check_matrix(array, rows);    
+    printf("\n\n\n");
+    check_matrix(array, rows);
     free_matrix(array);
     return 0;
 }
