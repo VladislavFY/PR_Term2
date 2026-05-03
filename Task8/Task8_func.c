@@ -29,10 +29,7 @@ int generate_students(const char *surname_file_name, Student **students, int *co
         return -4;
     }
 
-    while (
-        surname_count < 1000 &&
-        fscanf(surname_file, "%127s", surnames[surname_count]) == 1
-    ) {
+    while (surname_count < 1000 && fscanf(surname_file, "%127s", surnames[surname_count]) == 1) {
         surname_count++;
     }
 
