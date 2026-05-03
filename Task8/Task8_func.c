@@ -275,7 +275,7 @@ int main_function(void) {
     }
     
     if(choice==2){
-        printf("Original random list of students:\n")
+        printf("Original random list of students:\n");
         for (i = 0; i < count; ++i) {
             printf("%s %d %d", students[i].Name, students[i].Group, students[i].School);
             if (i + 1 < count) {
