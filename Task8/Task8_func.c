@@ -211,7 +211,8 @@ int main_function(void) {
     int count = 0;
     int status;
     int choice;
-
+    int i; 
+    
     printf("Choose input mode:\n");
     printf("1 - Read students from data.dat\n");
     printf("2 - Generate students automatically\n");
