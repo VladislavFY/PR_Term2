@@ -6,6 +6,65 @@ void free_students(Student *students) {
     }
     free(students);
 }
+int generate_students(const char *surname_file_name, Student **students, int *count, int min_group, int max_group, int min_school, int max_school) {
+    FILE *surname_file;
+    char surnames[1000][NAME_LEN];
+    int surname_count = 0;
+    int i;
+
+    if (surname_file_name == NULL || students == NULL || count == NULL) {
+        return -1;
+    }
+
+    if (*count <= 0) {
+        return -2;
+    }
+
+    if (min_group > max_group || min_school > max_school) {
+        return -3;
+    }
+
+    surname_file = fopen(surname_file_name, "r");
+    if (surname_file == NULL) {
+        return -4;
+    }
+
+    while (
+        surname_count < 1000 &&
+        fscanf(surname_file, "%127s", surnames[surname_count]) == 1
+    ) {
+        surname_count++;
+    }
+
+    fclose(surname_file);
+
+    if (surname_count == 0) {
+        return -5;
+    }
+
+    *students = (Student *)malloc((*count) * sizeof(Student));
+    if (*students == NULL) {
+        return -6;
+    }
+
+    srand((unsigned int)time(NULL));
+
+    for (i = 0; i < *count; ++i) {
+        int surname_index;
+        int group;
+        int school;
+
+        surname_index = rand() % surname_count;
+        group = min_group + rand() % (max_group - min_group + 1);
+        school = min_school + rand() % (max_school - min_school + 1);
+
+        strcpy((*students)[i].Name, surnames[surname_index]);
+        (*students)[i].Group = group;
+        (*students)[i].School = school;
+    }
+
+    return 0;
+}
 
 int read_students(FILE *f, Student **students, int *count) {
     Student temp;
@@ -176,18 +235,68 @@ int main_function(void) {
     Student *students = NULL;
     int count = 0;
     int status;
+    int choice;
 
-    f_in = fopen("data.dat", "r");
-    if (f_in == NULL) {
-        return 1;
+    printf("Choose input mode:\n");
+    printf("1 - Read students from data.dat\n");
+    printf("2 - Generate students automatically\n");
+    printf("Your choice: ");
+
+    if (scanf("%d", &choice) != 1) {
+        return -1;
     }
 
-    status = read_students(f_in, &students, &count);
-    fclose(f_in);
+    if (choice == 1) {
+        f_in = fopen("data.dat", "r");
+        if (f_in == NULL) {
+            return -2;
+        }
 
-    if (status != 0) {
-        free_students(students);
-        return 2;
+        status = read_students(f_in, &students, &count);
+        fclose(f_in);
+
+        if (status != 0) {
+            free_students(students);
+            return -3;
+        }
+    } else if (choice == 2) {
+        int min_group;
+        int max_group;
+        int min_school;
+        int max_school;
+
+        printf("Enter number of students: ");
+        if (scanf("%d", &count) != 1) {
+            return -4;
+        }
+
+        printf("Enter minimum group number: ");
+        if (scanf("%d", &min_group) != 1) {
+            return -5;
+        }
+
+        printf("Enter maximum group number: ");
+        if (scanf("%d", &max_group) != 1) {
+            return -6;
+        }
+
+        printf("Enter minimum school number: ");
+        if (scanf("%d", &min_school) != 1) {
+            return -7;
+        }
+
+        printf("Enter maximum school number: ");
+        if (scanf("%d", &max_school) != 1) {
+            return -8;
+        }
+
+        status = generate_students("surnames.txt", &students, &count, min_group, max_group, min_school, max_school);
+
+        if (status != 0) {
+            return -9;
+        }
+    } else {
+        return -10;
     }
 
     redistribute_students(students, count);
@@ -195,12 +304,13 @@ int main_function(void) {
     f_out = fopen("data.res", "w");
     if (f_out == NULL) {
         free_students(students);
-        return 3;
+        return -11;
     }
 
     write_students(f_out, students, count);
     fclose(f_out);
 
     free_students(students);
+
     return 0;
 }
