@@ -7,6 +7,7 @@ void free_matrix(int **array);
 int read_matrix(FILE *f, int ***array, int *rows);
 int write_matrix(FILE *f, int **array, int rows);
 int check_matrix(int **array, int rows);
+int check_matrix_rmod(int **array, int rows);
 int find_row(int **array, int rows);
 void delete_row(int **array, int *rows, int del_row);
 int main_function(void);
