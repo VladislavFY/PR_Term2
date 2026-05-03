@@ -2,15 +2,12 @@
 
 void free_students(Student **students, int count) {
     int i;
-
     if (students == NULL) {
         return;
     }
-
     for (i = 0; i < count; ++i) {
         free(students[i]);
     }
-
     free(students);
 }
 
@@ -23,6 +20,73 @@ void free_groups(Group groups[], int size) {
         groups[i].n = 0;
         groups[i].average_rating = 0.0;
     }
+}
+
+int generate_data_file(const char *surname_file_name, const char *data_file_name,int count,int min_group,int max_group,double min_rating,double max_rating) {
+    FILE *surname_file;
+    FILE *data_file;
+    char surnames[1000][NAME_LEN];
+    int surname_count = 0;
+    int i;
+
+    if (surname_file_name == NULL || data_file_name == NULL) {
+        return -1;
+    }
+
+    if (count <= 0) {
+        return -2;
+    }
+
+    if (min_group > max_group || min_rating > max_rating) {
+        return -3;
+    }
+
+    surname_file = fopen(surname_file_name, "r");
+
+    if (surname_file == NULL) {
+        return -4;
+    }
+
+    while (
+        surname_count < 1000 &&
+        fscanf(surname_file, "%127s", surnames[surname_count]) == 1
+    ) {
+        surname_count++;
+    }
+
+    fclose(surname_file);
+
+    if (surname_count == 0) {
+        return -5;
+    }
+
+    data_file = fopen(data_file_name, "w");
+
+    if (data_file == NULL) {
+        return -6;
+    }
+
+    srand((unsigned int)time(NULL));
+
+    for (i = 0; i < count; ++i) {
+        int surname_index;
+        int group;
+        double rating;
+
+        surname_index = rand() % surname_count;
+        group = min_group + rand() % (max_group - min_group + 1);
+        rating = min_rating + ((double)rand() / RAND_MAX) * (max_rating - min_rating);
+
+        fprintf(data_file,"%s %d %.2lf",surnames[surname_index],group,rating);
+
+        if (i + 1 < count) {
+            fprintf(data_file, "\n");
+        }
+    }
+
+    fclose(data_file);
+
+    return 0;
 }
 
 int read_students(FILE *f, Student ***students, int *count) {
