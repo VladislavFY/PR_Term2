@@ -75,26 +75,26 @@ int main_function(void) {
  int status = 0;
  int precision;
 
- printf("Введите нижний предел a: ");
+ printf("Enter low integral value a: ");
  if (scanf("%lf", &a) != 1) {
-  printf("Ошибка ввода a!\n");
+  printf("Invalid a input!\n");
   return -1;
  }
 
- printf("Введите верхний предел b: ");
+ printf("Enter up integral value b: ");
  if (scanf("%lf", &b) != 1) {
-  printf("Ошибка ввода b!\n");
+  printf("Invalid b input!\n");
   return -1;
  }
 
- printf("Введите точность eps, например 0.000001: ");
+ printf("Enter EPS(precision), for example 0.000001: ");
  if (scanf("%lf", &eps) != 1) {
-  printf("Ошибка ввода eps!\n");
+  printf("Invalid EPS input!\n");
   return -1;
  }
 
  if (eps <= 0.0 || eps >= 1.0) {
-  printf("Точность должна быть в промежутке 0 < eps < 1.\n");
+  printf("EPS must satisfy 0 < eps < 1.\n");
   return -2;
  }
 
@@ -105,14 +105,14 @@ int main_function(void) {
  difference = fabs(rectangle_answer - exact_answer);
 
  if (status == -1) {
-  printf("Ошибка: не удалось достичь нужной точности.\n");
+  printf("Error: couldnt achieve needed accuracy.\n");
   return -3;
  }
 
- printf("Интеграл методом прямоугольников: %.*lf\n", precision, rectangle_answer);
- printf("Интеграл по формуле Ньютона-Лейбница: %.*lf\n", precision, exact_answer);
- printf("Разница между ответами: %.*le\n", precision, difference);
- printf("Количество прямоугольников: %d\n", n);
+ printf("Result from rectangles method: %.*lf\n", precision, rectangle_answer);
+ printf("Result from Newton-Leibniz: %.*lf\n", precision, exact_answer);
+ printf("Answers difference: %.*le\n", precision, difference);
+ printf("Rectangles count: %d\n", n);
 
  return 0;
 }
