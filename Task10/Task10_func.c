@@ -22,6 +22,8 @@ int get_precision(double eps) {
 
 double newton_method(double x0, double eps, int *iter, int *status) {
  double x1;
+ double step;
+ double lambda;
  int i = 0;
 
  if (x0 <= -3.0) {
@@ -35,11 +37,19 @@ double newton_method(double x0, double eps, int *iter, int *status) {
    return 0.0;
   }
 
-  x1 = x0 - f_value(x0) / f_derivative(x0);
+  step = f_value(x0) / f_derivative(x0);
+  lambda = 1.0;
 
-  if (x1 <= -3.0) {
-   *status = -3;
-   return 0.0;
+  x1 = x0 - lambda * step;
+
+  while (x1 <= -3.0) {
+   lambda /= 2.0;
+   x1 = x0 - lambda * step;
+
+   if (lambda < 1e-12) {
+    *status = -3;
+    return 0.0;
+   }
   }
 
   i++;
