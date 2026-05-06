@@ -112,9 +112,3 @@ int main_function(void) {
 
  return 0;
 }
-
-int main(void){
- main_function();
-
- return 0;
-}
