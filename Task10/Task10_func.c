@@ -76,20 +76,20 @@ int main_function(void) {
  int status = 0;
  int precision;
 
- printf("Введите начальное приближение x0, x0 > -3: ");
+ printf("Enter initial x0 value, x0 > -3: ");
  if (scanf("%lf", &x0) != 1) {
-  printf("Ошибка ввода x0!\n");
+  printf("Invalid x0 input!\n");
   return -1;
  }
 
- printf("Введите точность eps, например 0.000001: ");
+ printf("Enter EPS value, for example 0.000001: ");
  if (scanf("%lf", &eps) != 1) {
-  printf("Ошибка ввода eps!\n");
+  printf("Invalid EPS input!\n");
   return -1;
  }
 
  if (eps <= 0.0 || eps >= 1.0) {
-  printf("Точность должна быть в промежутке 0 < eps < 1.\n");
+  printf("EPS must satisfy inequation 0 < eps < 1.\n");
   return -2;
  }
 
@@ -97,28 +97,28 @@ int main_function(void) {
  answer = newton_method(x0, eps, &iter, &status);
 
  if (status == -1) {
-  printf("Ошибка: x0 должен быть больше -3.\n");
+  printf("Error: x0 value must be bigger than -3.\n");
   return -3;
  }
 
  if (status == -2) {
-  printf("Ошибка: производная слишком близка к нулю.\n");
+  printf("Error: deriviative to close to zero.\n");
   return -4;
  }
 
  if (status == -3) {
-  printf("Ошибка: метод вышел из области определения.\n");
+  printf("Error: escaped the domain of definition.\n");
   return -5;
  }
 
  if (status == -4) {
-  printf("Ошибка: превышено максимальное число итераций.\n");
+  printf("Error: done more iterations than possible.\n");
   return -6;
  }
 
- printf("Корень уравнения: x = %.*lf\n", precision, answer);
- printf("Значение функции в корне: f(x) = %.*le\n", precision, f_value(answer));
- printf("Количество итераций: %d\n", iter);
+ printf("Root of the equation: x = %.*lf\n", precision, answer);
+ printf("Value of function in root point: f(x) = %.*le\n", precision, f_value(answer));
+ printf("Iteration count: %d\n", iter);
 
  return 0;
 }
