@@ -1,3 +1,0 @@
-Voronov 310 3.80
-Gromov 310 4.20
-Komarov 310 4.40

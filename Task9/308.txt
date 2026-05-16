@@ -1,3 +1,0 @@
-Nikolaev 308 3.60
-Bogdanov 308 4.90
-Tarasov 308 4.00

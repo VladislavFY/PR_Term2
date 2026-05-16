@@ -1,3 +1,0 @@
-Volkov 306 3.70
-Fedorov 306 4.80
-Dmitriev 306 4.10
