@@ -1,4 +1,4 @@
-#include "prototypes.h"
+#include "prototypes9.h"
 
 char *copy_string(const char *value) {
  char *new_value;
