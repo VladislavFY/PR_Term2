@@ -245,17 +245,20 @@ int main_function(void) {
  char value[VALUE_LEN];
  int command;
  int status;
+ size_t len;
 
  while (1) {
 
   print_commands();
   printf("Enter command: ");
-   
+
   if (scanf("%d", &command) != 1) {
    printf("Invalid command input!\n");
    clear_input();
    continue;
   }
+
+  clear_input();
 
   if (command == 0) {
    free_tree(tree);
@@ -264,11 +267,23 @@ int main_function(void) {
 
   if (command == 1) {
    printf("Enter root value: ");
-   if (scanf("%1023s", value) != 1) {
+   if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
-    clear_input();
     continue;
    }
+
+   len = strlen(value);
+   if (len > 0 && value[len - 1] == '\n') {
+    value[len - 1] = '\0';
+   } else {
+    clear_input();
+   }
+
+   if (strlen(value) == 0) {
+    printf("Error: empty value.\n");
+    continue;
+   }
+
    free_tree(tree);
    tree = create_tree(value);
    if (tree == NULL) {
@@ -278,6 +293,7 @@ int main_function(void) {
    printf("Tree created.\n");
    continue;
   }
+
   if (tree == NULL) {
    printf("Error: tree is not created.\n");
    continue;
@@ -285,11 +301,23 @@ int main_function(void) {
 
   if (command == 2) {
    printf("Enter left child value: ");
-   if (scanf("%1023s", value) != 1) {
+   if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
-    clear_input();
     continue;
    }
+
+   len = strlen(value);
+   if (len > 0 && value[len - 1] == '\n') {
+    value[len - 1] = '\0';
+   } else {
+    clear_input();
+   }
+
+   if (strlen(value) == 0) {
+    printf("Error: empty value.\n");
+    continue;
+   }
+
    status = add_left(tree, value);
    if (status == 0) {
     printf("Left child added.\n");
@@ -301,11 +329,23 @@ int main_function(void) {
 
   } else if (command == 3) {
    printf("Enter right child value: ");
-   if (scanf("%1023s", value) != 1) {
+   if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
-    clear_input();
     continue;
    }
+
+   len = strlen(value);
+   if (len > 0 && value[len - 1] == '\n') {
+    value[len - 1] = '\0';
+   } else {
+    clear_input();
+   }
+
+   if (strlen(value) == 0) {
+    printf("Error: empty value.\n");
+    continue;
+   }
+
    status = add_right(tree, value);
    if (status == 0) {
     printf("Right child added.\n");
@@ -314,7 +354,7 @@ int main_function(void) {
    } else {
     printf("Error: right child was not added.\n");
    }
-    
+
   } else if (command == 4) {
    status = delete_left(tree);
    if (status == 0) {
@@ -322,7 +362,7 @@ int main_function(void) {
    } else {
     printf("Error: left subtree is empty.\n");
    }
-    
+
   } else if (command == 5) {
    status = delete_right(tree);
    if (status == 0) {
@@ -330,7 +370,7 @@ int main_function(void) {
    } else {
     printf("Error: right subtree is empty.\n");
    }
-    
+
   } else if (command == 6) {
    status = move_parent(tree);
    if (status == 0) {
@@ -346,7 +386,7 @@ int main_function(void) {
    } else {
     printf("Error: left child does not exist.\n");
    }
-    
+
   } else if (command == 8) {
    status = move_right(tree);
    if (status == 0) {
