@@ -2,17 +2,13 @@
 
 char *copy_string(const char *value) {
  char *new_value;
-  
  if (value == NULL) {
   return NULL;
  }
-
  new_value = (char *)malloc((strlen(value) + 1) * sizeof(char));
-
  if (new_value == NULL) {
   return NULL;
  }
-  
  strcpy(new_value, value);
  return new_value;
 }
@@ -20,18 +16,14 @@ char *copy_string(const char *value) {
 TreeNode *create_node(const char *value, TreeNode *parent) {
  TreeNode *node;
  node = (TreeNode *)malloc(sizeof(TreeNode));
-
  if (node == NULL) {
   return NULL;
  }
-
  node->value = copy_string(value);
-
  if (node->value == NULL) {
   free(node);
   return NULL;
  }
-
  node->parent = parent;
  node->left_child = NULL;
  node->right_child = NULL;
@@ -40,20 +32,15 @@ TreeNode *create_node(const char *value, TreeNode *parent) {
 
 Tree *create_tree(const char *value) {
  Tree *tree;
-
  tree = (Tree *)malloc(sizeof(Tree));
-
  if (tree == NULL) {
   return NULL;
  }
-
  tree->root = create_node(value, NULL);
-
  if (tree->root == NULL) {
   free(tree);
   return NULL;
  }
-
  tree->current = tree->root;
  return tree;
 }
@@ -62,7 +49,6 @@ void free_subtree(TreeNode *node) {
  if (node == NULL) {
   return;
  }
-
  free_subtree(node->left_child);
  free_subtree(node->right_child);
  free(node->value);
@@ -73,66 +59,51 @@ void free_tree(Tree *tree) {
  if (tree == NULL) {
   return;
  }
-
  free_subtree(tree->root);
  free(tree);
 }
 
 int add_left(Tree *tree, const char *value) {
  TreeNode *node;
-
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->left_child != NULL) {
   return -2;
  }
-
  node = create_node(value, tree->current);
-
  if (node == NULL) {
   return -3;
  }
-
  tree->current->left_child = node;
  return 0;
 }
 
 int add_right(Tree *tree, const char *value) {
  TreeNode *node;
-  
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->right_child != NULL) {
   return -2;
  }
-
  node = create_node(value, tree->current);
-
  if (node == NULL) {
   return -3;
  }
-
  tree->current->right_child = node;
  return 0;
 }
 
 int delete_left(Tree *tree) {
-
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->left_child == NULL) {
   return -2;
  }
-
  free_subtree(tree->current->left_child);
  tree->current->left_child = NULL;
-
  return 0;
 }
 
@@ -140,11 +111,9 @@ int delete_right(Tree *tree) {
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->right_child == NULL) {
   return -2;
  }
-
  free_subtree(tree->current->right_child);
  tree->current->right_child = NULL;
  return 0;
@@ -154,11 +123,9 @@ int move_parent(Tree *tree) {
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->parent == NULL) {
   return -2;
  }
-
  tree->current = tree->current->parent;
  return 0;
 }
@@ -167,11 +134,9 @@ int move_left(Tree *tree) {
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->left_child == NULL) {
   return -2;
  }
-
  tree->current = tree->current->left_child;
  return 0;
 }
@@ -180,35 +145,36 @@ int move_right(Tree *tree) {
  if (tree == NULL || tree->current == NULL) {
   return -1;
  }
-
  if (tree->current->right_child == NULL) {
   return -2;
  }
-
  tree->current = tree->current->right_child;
  return 0;
 }
 
-void print_node(TreeNode *node, int depth, const char *name, TreeNode *current) {
- int i;
-
+void print_node(TreeNode *node, const char *prefix, int is_left, int depth, TreeNode *current) {
+ char right_prefix[PRINT_PREFIX_LEN];
+ char left_prefix[PRINT_PREFIX_LEN];
  if (node == NULL) {
   return;
  }
-
- for (i = 0; i < depth; ++i) {
-  printf("  ");
+ if (node->right_child != NULL) {
+  snprintf(right_prefix, PRINT_PREFIX_LEN, "%s%s", prefix, depth == 0 ? "    " : (is_left ? "|   " : "    "));
+  print_node(node->right_child, right_prefix, 0, depth + 1, current);
  }
-
- printf("%s: %s", name, node->value);
-
+ printf("%s", prefix);
+ if (depth > 0) {
+  printf(is_left ? "\\-- " : "/-- ");
+ }
+ printf("%s", node->value);
  if (node == current) {
   printf(" <- current");
  }
-
  printf("\n");
- print_node(node->left_child, depth + 1, "left", current);
- print_node(node->right_child, depth + 1, "right", current);
+ if (node->left_child != NULL) {
+  snprintf(left_prefix, PRINT_PREFIX_LEN, "%s%s", prefix, depth == 0 ? "    " : (is_left ? "    " : "|   "));
+  print_node(node->left_child, left_prefix, 1, depth + 1, current);
+ }
 }
 
 void print_tree(Tree *tree) {
@@ -216,8 +182,7 @@ void print_tree(Tree *tree) {
   printf("Tree is empty.\n");
   return;
  }
-
- print_node(tree->root, 0, "root", tree->current);
+ print_node(tree->root, "", 0, 0, tree->current);
 }
 
 void print_commands(void) {
@@ -246,44 +211,35 @@ int main_function(void) {
  int command;
  int status;
  size_t len;
-
  while (1) {
-
   print_commands();
   printf("Enter command: ");
-
   if (scanf("%d", &command) != 1) {
    printf("Invalid command input!\n");
    clear_input();
    continue;
   }
-
   clear_input();
-
   if (command == 0) {
    free_tree(tree);
    return 0;
   }
-
   if (command == 1) {
    printf("Enter root value: ");
    if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
     continue;
    }
-
    len = strlen(value);
    if (len > 0 && value[len - 1] == '\n') {
     value[len - 1] = '\0';
    } else {
     clear_input();
    }
-
    if (strlen(value) == 0) {
     printf("Error: empty value.\n");
     continue;
    }
-
    free_tree(tree);
    tree = create_tree(value);
    if (tree == NULL) {
@@ -293,31 +249,26 @@ int main_function(void) {
    printf("Tree created.\n");
    continue;
   }
-
   if (tree == NULL) {
    printf("Error: tree is not created.\n");
    continue;
   }
-
   if (command == 2) {
    printf("Enter left child value: ");
    if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
     continue;
    }
-
    len = strlen(value);
    if (len > 0 && value[len - 1] == '\n') {
     value[len - 1] = '\0';
    } else {
     clear_input();
    }
-
    if (strlen(value) == 0) {
     printf("Error: empty value.\n");
     continue;
    }
-
    status = add_left(tree, value);
    if (status == 0) {
     printf("Left child added.\n");
@@ -326,26 +277,22 @@ int main_function(void) {
    } else {
     printf("Error: left child was not added.\n");
    }
-
   } else if (command == 3) {
    printf("Enter right child value: ");
    if (fgets(value, VALUE_LEN, stdin) == NULL) {
     printf("Invalid value input!\n");
     continue;
    }
-
    len = strlen(value);
    if (len > 0 && value[len - 1] == '\n') {
     value[len - 1] = '\0';
    } else {
     clear_input();
    }
-
    if (strlen(value) == 0) {
     printf("Error: empty value.\n");
     continue;
    }
-
    status = add_right(tree, value);
    if (status == 0) {
     printf("Right child added.\n");
@@ -354,7 +301,6 @@ int main_function(void) {
    } else {
     printf("Error: right child was not added.\n");
    }
-
   } else if (command == 4) {
    status = delete_left(tree);
    if (status == 0) {
@@ -362,7 +308,6 @@ int main_function(void) {
    } else {
     printf("Error: left subtree is empty.\n");
    }
-
   } else if (command == 5) {
    status = delete_right(tree);
    if (status == 0) {
@@ -370,7 +315,6 @@ int main_function(void) {
    } else {
     printf("Error: right subtree is empty.\n");
    }
-
   } else if (command == 6) {
    status = move_parent(tree);
    if (status == 0) {
@@ -378,7 +322,6 @@ int main_function(void) {
    } else {
     printf("Error: parent does not exist.\n");
    }
-
   } else if (command == 7) {
    status = move_left(tree);
    if (status == 0) {
@@ -386,7 +329,6 @@ int main_function(void) {
    } else {
     printf("Error: left child does not exist.\n");
    }
-
   } else if (command == 8) {
    status = move_right(tree);
    if (status == 0) {
@@ -394,7 +336,6 @@ int main_function(void) {
    } else {
     printf("Error: right child does not exist.\n");
    }
-
   } else if (command == 9) {
    print_tree(tree);
   } else {
