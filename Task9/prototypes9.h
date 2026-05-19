@@ -3,25 +3,18 @@
 #include <string.h>
 
 #define VALUE_LEN 1024
+#define PRINT_PREFIX_LEN 4096
 
 typedef struct TreeNode {
-
  struct TreeNode *parent;
-
  struct TreeNode *left_child;
-
  struct TreeNode *right_child;
-
  char *value;
-
 } TreeNode;
 
 typedef struct {
-
  TreeNode *root;
-
  TreeNode *current;
-
 } Tree;
 
 char *copy_string(const char *value);
@@ -36,7 +29,7 @@ int delete_right(Tree *tree);
 int move_parent(Tree *tree);
 int move_left(Tree *tree);
 int move_right(Tree *tree);
-void print_node(TreeNode *node, int depth, const char *name, TreeNode *current);
+void print_node(TreeNode *node, const char *prefix, int is_left, int depth, TreeNode *current);
 void print_tree(Tree *tree);
 void print_commands(void);
 void clear_input(void);
