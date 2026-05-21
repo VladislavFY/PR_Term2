@@ -77,8 +77,7 @@ int generate_students(const char *surname_file_name, StudentData *database, int 
         return -4;
     }
 
-    while (surname_count < MAX_SURNAMES &&
-           fscanf(surname_file, "%127s", surnames[surname_count]) == 1) {
+    while (surname_count < MAX_SURNAMES && fscanf(surname_file, "%127s", surnames[surname_count]) == 1) {
         surname_count++;
     }
 
@@ -142,8 +141,7 @@ int read_students(FILE *f, StudentData *database)
         if (database->count >= capacity) {
             capacity *= 2;
 
-            new_students = (Student *)realloc(database->students,
-                                              (size_t)capacity * sizeof(Student));
+            new_students = (Student *)realloc(database->students, (size_t)capacity * sizeof(Student));
 
             if (new_students == NULL) {
                 free_students(database);
@@ -174,10 +172,7 @@ int write_students(FILE *f, StudentData *database)
     }
 
     for (i = 0; i < database->count; ++i) {
-        fprintf(f, "%s %d %d",
-                database->students[i].Name,
-                database->students[i].Group,
-                database->students[i].School);
+        fprintf(f, "%s %d %d", database->students[i].Name, database->students[i].Group, database->students[i].School);
 
         if (i + 1 < database->count) {
             fprintf(f, "\n");
@@ -231,10 +226,7 @@ void sort_students(StudentData *database)
         return;
     }
 
-    qsort(database->students,
-          (size_t)database->count,
-          sizeof(Student),
-          compare_students);
+    qsort(database->students, (size_t)database->count, sizeof(Student), compare_students);
 }
 
 int has_schoolmate_in_group(StudentData *database, int index, int group)
@@ -242,8 +234,7 @@ int has_schoolmate_in_group(StudentData *database, int index, int group)
     int i;
     int school;
 
-    if (database == NULL || database->students == NULL ||
-        index < 0 || index >= database->count) {
+    if (database == NULL || database->students == NULL || index < 0 || index >= database->count) {
         return 0;
     }
 
@@ -254,8 +245,7 @@ int has_schoolmate_in_group(StudentData *database, int index, int group)
             continue;
         }
 
-        if (database->students[i].Group == group &&
-            database->students[i].School == school) {
+        if (database->students[i].Group == group && database->students[i].School == school) {
             return 1;
         }
     }
@@ -276,8 +266,7 @@ int group_has_school(StudentData *database, int group, int school, int skip_inde
             continue;
         }
 
-        if (database->students[i].Group == group &&
-            database->students[i].School == school) {
+        if (database->students[i].Group == group && database->students[i].School == school) {
             return 1;
         }
     }
@@ -428,13 +417,7 @@ int main_function(void)
             return -8;
         }
 
-        status = generate_students("surnames.txt",
-                                   &database,
-                                   count,
-                                   min_group,
-                                   max_group,
-                                   min_school,
-                                   max_school);
+        status = generate_students("surnames.txt",&database,count,min_group,max_group,min_school,max_school);
 
         if (status != 0) {
             free_students(&database);
@@ -468,14 +451,12 @@ int main_function(void)
     fprintf(f_out, "Sorted list before redistribute:\n");
     write_students(f_out, &original_database);
 
-    fprintf(f_out, "\n\nProblem students before redistribute: %d\n\n",
-            problems_before);
+    fprintf(f_out, "\n\nProblem students before redistribute: %d\n\n", problems_before);
 
     fprintf(f_out, "Sorted list after redistribute:\n");
     write_students(f_out, &database);
 
-    fprintf(f_out, "\n\nProblem students after redistribute: %d\n",
-            problems_after);
+    fprintf(f_out, "\n\nProblem students after redistribute: %d\n", problems_after);
 
     fclose(f_out);
     f_out = NULL;
