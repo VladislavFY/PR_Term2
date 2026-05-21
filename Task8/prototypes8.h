@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,20 +7,20 @@
 #define NAME_LEN 128
 
 typedef struct {
- char Name[NAME_LEN];
- int Group;
- int School;
+    char Name[NAME_LEN];
+    int Group;
+    int School;
 } Student;
 
 typedef struct {
- Student *students;
- int count;
+    Student *students;
+    int count;
 } StudentData;
 
 void init_database(StudentData *database);
 void free_students(StudentData *database);
 int copy_database(StudentData *from, StudentData *to);
-int generate_students(const char *surname_file_name, StudentData *database, int count, int min_group, int max_group, int min_school, int max_school);
+int generate_students(const char *surname_file_name, StudentData *database, int count, int min_group, int max_group, int min_school,int max_school);
 int read_students(FILE *f, StudentData *database);
 int write_students(FILE *f, StudentData *database);
 int compare_students(const void *a, const void *b);
