@@ -2,29 +2,6 @@
 
 #define MAX_SURNAMES 1000
 
-static FILE *open_input_file(const char *file_name)
-{
-    FILE *file;
-
-    if (file_name == NULL) {
-        return NULL;
-    }
-
-    file = fopen(file_name, "r");
-
-    if (file != NULL) {
-        return file;
-    }
-
-    if (strcmp(file_name, "data.dat") == 0) {
-        file = fopen("Task8/data.dat", "r");
-    } else if (strcmp(file_name, "surnames.txt") == 0) {
-        file = fopen("Task8/surnames.txt", "r");
-    }
-
-    return file;
-}
-
 void init_database(StudentData *database)
 {
     if (database == NULL) {
