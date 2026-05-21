@@ -52,14 +52,8 @@ int copy_database(StudentData *from, StudentData *to)
     return 0;
 }
 
-int generate_students(const char *surname_file_name,
-                      StudentData *database,
-                      int count,
-                      int min_group,
-                      int max_group,
-                      int min_school,
-                      int max_school)
-{
+int generate_students(const char *surname_file_name, StudentData *database, int count,int min_group,int max_group, int min_school, int max_school){
+    
     FILE *surname_file;
     char surnames[MAX_SURNAMES][NAME_LEN];
     int surname_count = 0;
@@ -77,7 +71,7 @@ int generate_students(const char *surname_file_name,
         return -3;
     }
 
-    surname_file = open_input_file(surname_file_name);
+    surname_file = fopen(surname_file_name, "r");
 
     if (surname_file == NULL) {
         return -4;
@@ -388,7 +382,7 @@ int main_function(void)
     }
 
     if (choice == 1) {
-        f_in = open_input_file("data.dat");
+        f_in = fopen("data.dat", "r");
 
         if (f_in == NULL) {
             return -2;
