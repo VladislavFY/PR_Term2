@@ -75,6 +75,75 @@ double calculate_integral_runge(double a, double b, double eps, int *n, double *
  *status = -1;
  return previous;
 }
+double second_derivative_value(double x) {
+
+ double pi = acos(-1.0);
+
+ return pow(pi, x) * pow(log(pi), 2.0) - exp(x);
+
+}
+
+double get_m2_value(double a, double b) {
+
+ double pi = acos(-1.0);
+
+ double left = a;
+ double right = b;
+ double critical;
+ double m2;
+
+ if (left > right) {
+  left = b;
+  right = a;
+ }
+
+ m2 = fabs(second_derivative_value(left));
+
+ if (fabs(second_derivative_value(right)) > m2) {
+  m2 = fabs(second_derivative_value(right));
+ }
+
+ critical = 3.0 * log(log(pi)) / (1.0 - log(pi));
+
+ if (critical >= left && critical <= right) {
+  if (fabs(second_derivative_value(critical)) > m2) {
+   m2 = fabs(second_derivative_value(critical));
+  }
+ }
+ return m2;
+}
+
+int get_steps_by_error(double a, double b, double eps, int *status) {
+
+ double length = fabs(b - a);
+ double m2 = get_m2_value(a, b);
+ double n_value;
+ int n;
+
+ if (m2 == 0.0) {
+  *status = 0;
+  return 1;
+ }
+ n_value = sqrt(pow(length, 3.0) * m2 / (24.0 * eps));
+ if (n_value > MAX_N) {
+  *status = -1;
+  return MAX_N;
+ }
+ n = (int)ceil(n_value);
+ if (n < 1) {
+  n = 1;
+ }
+ *status = 0;
+ return n;
+}
+
+double calculate_integral_estimate(double a, double b, double eps, int *n, int *status) {
+ *n = get_steps_by_error(a, b, eps, status);
+ if (*status == -1) {
+  return 0.0;
+ }
+ return rectangle_integral(a, b, *n);
+}
 
 int main_function(void) {
  double a;
@@ -92,7 +161,11 @@ int main_function(void) {
  int old_status = 0;
  int runge_status = 0;
  int precision;
-
+ double estimate_answer;
+ double estimate_difference;
+ int estimate_n = 1;
+ int estimate_status = 0;
+ 
  printf("Enter low integral value a: ");
  if (scanf("%lf", &a) != 1) {
   printf("Invalid a input!\n");
@@ -120,6 +193,7 @@ int main_function(void) {
 
  old_answer = calculate_integral(a, b, eps, &old_n, &old_status);
  runge_answer = calculate_integral_runge(a, b, eps, &runge_n, &runge_method_error, &runge_status);
+ estimate_answer = calculate_integral_estimate(a, b, eps, &estimate_n, &estimate_status);
  exact_answer = exact_integral(a, b);
 
  if (old_status == -1) {
@@ -131,7 +205,12 @@ int main_function(void) {
   printf("Error: couldnt achieve needed accuracy by Runge method.\n");
   return -4;
  }
+ if (estimate_status == -1) {
 
+ printf("Error: couldnt achieve needed accuracy by estimate method.\n");
+ return -5;
+
+ }
  old_difference = fabs(old_answer - exact_answer);
  runge_difference = fabs(runge_answer - exact_answer);
  methods_difference = fabs(old_answer - runge_answer);
@@ -144,6 +223,9 @@ int main_function(void) {
  printf("Runge method and Newton-Leibniz difference: %.*le\n", precision, runge_difference);
  printf("Old method and Runge method difference: %.*le\n", precision, methods_difference);
  printf("Runge method error: %.*le\n", precision, runge_method_error);
+ printf("Result from third method: %.*lf\n", precision, estimate_answer);
+ printf("Third method and Newton-Leibniz difference: %.*le\n", precision, estimate_difference);
+ printf("Third method rectangles count: %d\n", estimate_n);
 
  printf("Old method rectangles count: %d\n", old_n);
  printf("Runge method rectangles count: %d\n", runge_n);
