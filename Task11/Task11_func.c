@@ -218,17 +218,17 @@ int main_function(void) {
  printf("Result from old rectangles method: %.*lf\n", precision, old_answer);
  printf("Result from Runge rectangles method: %.*lf\n", precision, runge_answer);
  printf("Result from Newton-Leibniz: %.*lf\n", precision, exact_answer);
-
+ printf("\n");
  printf("Old method and Newton-Leibniz difference: %.*le\n", precision, old_difference);
  printf("Runge method and Newton-Leibniz difference: %.*le\n", precision, runge_difference);
  printf("Old method and Runge method difference: %.*le\n", precision, methods_difference);
  printf("Runge method error: %.*le\n", precision, runge_method_error);
+ printf("\n");
  printf("Result from third method: %.*lf\n", precision, estimate_answer);
  printf("Third method and Newton-Leibniz difference: %.*le\n", precision, estimate_difference);
- printf("Third method rectangles count: %d\n", estimate_n);
-
+ printf("\n");
  printf("Old method rectangles count: %d\n", old_n);
  printf("Runge method rectangles count: %d\n", runge_n);
-
+ printf("Third method rectangles count: %d\n", estimate_n);
  return 0;
 }
