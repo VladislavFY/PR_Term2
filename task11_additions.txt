@@ -1,0 +1,153 @@
+ДОБАВЛЕНИЯ ДЛЯ TASK11
+
+1) В prototypes11.h добавить:
+
+```c
+double second_derivative_value(double x);
+double get_m2_value(double a, double b);
+int get_steps_by_error(double a, double b, double eps, int *status);
+double calculate_integral_estimate(double a, double b, double eps, int *n, int *status);
+```
+
+2) В Task11_func.c добавить после calculate_integral_runge:
+
+```c
+double second_derivative_value(double x) {
+
+ double pi = acos(-1.0);
+
+ return pow(pi, x) * pow(log(pi), 2.0) - exp(x);
+
+}
+
+double get_m2_value(double a, double b) {
+
+ double pi = acos(-1.0);
+
+ double left = a;
+ double right = b;
+ double critical;
+ double m2;
+
+ if (left > right) {
+
+  left = b;
+  right = a;
+
+ }
+
+ m2 = fabs(second_derivative_value(left));
+
+ if (fabs(second_derivative_value(right)) > m2) {
+
+  m2 = fabs(second_derivative_value(right));
+
+ }
+
+ critical = 3.0 * log(log(pi)) / (1.0 - log(pi));
+
+ if (critical >= left && critical <= right) {
+
+  if (fabs(second_derivative_value(critical)) > m2) {
+
+   m2 = fabs(second_derivative_value(critical));
+
+  }
+
+ }
+
+ return m2;
+
+}
+
+int get_steps_by_error(double a, double b, double eps, int *status) {
+
+ double length = fabs(b - a);
+ double m2 = get_m2_value(a, b);
+ double n_value;
+ int n;
+
+ if (m2 == 0.0) {
+
+  *status = 0;
+  return 1;
+
+ }
+
+ n_value = sqrt(pow(length, 3.0) * m2 / (24.0 * eps));
+
+ if (n_value > MAX_N) {
+
+  *status = -1;
+  return MAX_N;
+
+ }
+
+ n = (int)ceil(n_value);
+
+ if (n < 1) {
+
+  n = 1;
+
+ }
+
+ *status = 0;
+
+ return n;
+
+}
+
+double calculate_integral_estimate(double a, double b, double eps, int *n, int *status) {
+
+ *n = get_steps_by_error(a, b, eps, status);
+
+ if (*status == -1) {
+
+  return 0.0;
+
+ }
+
+ return rectangle_integral(a, b, *n);
+
+}
+```
+
+3) В main_function к переменным добавить:
+
+```c
+double estimate_answer;
+double estimate_difference;
+int estimate_n = 1;
+int estimate_status = 0;
+```
+
+4) После строки с runge_answer добавить:
+
+```c
+estimate_answer = calculate_integral_estimate(a, b, eps, &estimate_n, &estimate_status);
+```
+
+5) После проверки runge_status добавить:
+
+```c
+if (estimate_status == -1) {
+
+ printf("Error: couldnt achieve needed accuracy by estimate method.\n");
+ return -5;
+
+}
+```
+
+6) После строки с runge_difference добавить:
+
+```c
+estimate_difference = fabs(estimate_answer - exact_answer);
+```
+
+7) К выводам добавить:
+
+```c
+printf("Result from estimate rectangles method: %.*lf\n", precision, estimate_answer);
+printf("Estimate method and Newton-Leibniz difference: %.*le\n", precision, estimate_difference);
+printf("Estimate method rectangles count: %d\n", estimate_n);
+```
