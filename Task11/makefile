@@ -1,4 +1,4 @@
-all: Task11_main.o Tas11_func.o
+all: Task11_main.o Task11_func.o
 	gcc Task11_main.o Task11_func.o && rm *.o
 
 Task11_main.o:
